@@ -55,18 +55,46 @@ def OAC(hand, table, amount):
             return True
     return False
 
+def fullHouse(hand, table):
+    pair = False
+    three = False
+    handCopy = hand.copy()
+    tableCopy = table.copy()
+    for i in range(0,2):
+        handCopy[i] = handCopy[i][1:]
+        handCopy[i] = int(handCopy[i])
+    for i in range(0,4):
+        tableCopy[i] = tableCopy[i][1:]
+        tableCopy[i] = int(tableCopy[i])
+    for i in range(2,15):
+        count = handCopy.count(i) + tableCopy.count(i)
+        
+        if count == 2:
+            pair = True
+        elif count == 3:
+            three = True
+
+    if pair and three:
+        return True
+    
+    return False
+
 deck = build_deck()
 hand = draw(deck, 2)
 table = draw(deck, 5)
 
-#hand = ['D11','C11']
-#table = ['H11','C2','H2','C5']
+hand = ['D11','C11']
+table = ['H11','C2','H2','C5']
 
-print(hand)
-print(table)
+print("Your hand is", hand)
+print("On the table is", table)
+
 
 if flush(hand, table) == True:
     print("You have a flush")
+
+elif fullHouse(hand, table) == True:
+    print("You have full house")
 
 elif OAC(hand, table, 4) == True:
     print("You have four of a kind!")
