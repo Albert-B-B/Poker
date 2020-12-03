@@ -15,9 +15,9 @@ def clicked():
     if times_drawn == 1:
         cards = draw(3)
     elif times_drawn <= 3:
-        cards.append(draw(1))
+        cards.extend(draw(1))
 
-    drawn_cards_label.configure(text=cards)
+    drawn_cards_label.configure(text=" | ".join(cards))
 
 
 def draw(amount):
@@ -95,6 +95,6 @@ fold_button.grid(column=0, row=i, sticky='W')
 i += 1
 
 hand = draw(2)
-hand_label = tk.Label(window, text=hand)
+hand_label = tk.Label(window, text=' and '.join(hand))
 hand_label.grid(column=0, row=i, sticky='W')
 window.mainloop()
