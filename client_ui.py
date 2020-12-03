@@ -1,8 +1,9 @@
 from random import randrange, choices
 import tkinter as tk
 
-full_deck = ["Ace of spades", "2 of spades", "3 of spades", "4 of spades", "5 of spades", "6 of spades", "7 of spades", "8 of spades", "9 of spades", "10 of spades", "Jack of spades", "Queen of spades", "King of spades", "Ace of diamonds", "2 of diamonds", "3 of diamonds", "4 of diamonds", "5 of diamonds", "6 of diamonds", "7 of diamonds", "8 of diamonds", "9 of diamonds", "10 of diamonds", "Jack of diamonds", "Queen of diamonds",
-             "King of diamonds", "Ace of hearts", "2 of hearts", "3 of hearts", "4 of hearts", "5 of hearts", "6 of hearts", "7 of hearts", "8 of hearts", "9 of hearts", "10 of hearts", "Jack of hearts", "Queen of hearts", "King of hearts", "Ace of clubs", "2 of clubs", "3 of clubs", "4 of clubs", "5 of clubs", "6 of clubs", "7 of clubs", "8 of clubs", "9 of clubs", "10 of clubs", "Jack of clubs", "Queen of clubs", "King of clubs"]
+from cards import *
+
+full_deck = build_deck()
 deck = full_deck.copy()
 
 times_drawn = 0
@@ -17,7 +18,7 @@ def clicked():
     elif times_drawn <= 3:
         cards.extend(draw(1))
 
-    drawn_cards_label.configure(text=" | ".join(cards))
+    drawn_cards_label.configure(text=" | ".join(map(str, cards)))
 
 
 def draw(amount):
@@ -95,6 +96,6 @@ fold_button.grid(column=0, row=i, sticky='W')
 i += 1
 
 hand = draw(2)
-hand_label = tk.Label(window, text=' and '.join(hand))
+hand_label = tk.Label(window, text=' and '.join(map(str, hand)))
 hand_label.grid(column=0, row=i, sticky='W')
 window.mainloop()

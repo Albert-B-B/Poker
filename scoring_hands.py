@@ -1,15 +1,7 @@
+import sys
 from random import randrange
 
-
-def build_deck():
-    numbers = range(2, 15)
-    suits = ['H', 'S', 'C', 'D']
-    deck = []
-    for num in numbers:
-        for suit in suits:
-            card = suit + str(num)
-            deck.append(card)
-    return deck
+from cards import build_deck, Suit, Rank, Card
 
 
 def draw(deck, amount):
@@ -24,13 +16,12 @@ def draw(deck, amount):
 
 
 def is_straight_flush(hand, table):
-    suits = ['H', 'S', 'C', 'D']
     hand_and_table = table + hand
 
-    for suit in suits:
+    for suit in Suit:
         for i in range(2, 6):
             for k in range(5):
-                if suit + str(i + k) not in hand_and_table:
+                if Card(suit, Rank(i+k)) not in hand_and_table:
                     break
             else:
                 return True
@@ -38,14 +29,11 @@ def is_straight_flush(hand, table):
 
 
 def is_straight(hand, table):
-    hand_ranks = [int(card[1:]) for card in hand]
-    table_ranks = [int(card[1:]) for card in table]
-
-    hand_and_table = table_ranks + hand_ranks
+    ranks = [card.rank for card in hand + table]
 
     for i in range(2, 6):
         for k in range(5):
-            if (i + k) not in hand_and_table:
+            if Rank(i + k) not in ranks:
                 break
         else:
             return True
@@ -53,14 +41,10 @@ def is_straight(hand, table):
 
 
 def is_flush(hand, table):
-    suits = ['H', 'S', 'C', 'D']
-    for suit in suits:
+    for suit in Suit:
         count = 0
-        for card in table:
-            if suit in card:
-                count += 1
-        for card in hand:
-            if suit in card:
+        for card in table + hand:
+            if card.suit == suit:
                 count += 1
 
         if count >= 5:
@@ -69,47 +53,42 @@ def is_flush(hand, table):
 
 
 def is_of_a_kind(hand, table, amount):
-    hand_ranks = [int(card[1:]) for card in hand]
-    table_ranks = [int(card[1:]) for card in table]
+    ranks = [card.rank for card in hand + table]
 
-    for i in range(2, 15):
-        count = hand_ranks.count(i) + table_ranks.count(i)
-
-        if count == amount:
+    for rank in Rank:
+        if ranks.count(rank) == amount:
             return True
 
     return False
 
 
 def high_card(hand):
-    hand_ranks = [int(card[1:]) for card in hand]
-    return max(hand_ranks)
+    return max(card.rank for card in hand)
 
 
 def is_two_pairs(hand, table):
     first_pair = False
 
-    hand_ranks = [int(card[1:]) for card in hand]
-    table_ranks = [int(card[1:]) for card in table]
+    ranks = [card.rank for card in hand + table]
 
-    for i in range(2, 15):
-        count = hand_ranks.count(i) + table_ranks.count(i)
+    for rank in Rank:
+        count = ranks.count(rank)
 
         if count == 2 and not first_pair:
             first_pair = True
         elif count == 2:
             return True
+    return False
 
 
 def is_full_house(hand, table):
     pair = False
     three = False
 
-    hand_ranks = [int(card[1:]) for card in hand]
-    table_ranks = [int(card[1:]) for card in table]
+    ranks = [card.rank for card in hand + table]
 
-    for i in range(2, 15):
-        count = hand_ranks.count(i) + table_ranks.count(i)
+    for rank in Rank:
+        count = ranks.count(rank)
 
         if count == 2:
             pair = True
@@ -139,7 +118,7 @@ sf = 0
 #print("On the table is", table)
 
 # straight flush
-for i in range(0, 100):
+for i in range(0, 1):
     deck = build_deck()
     hand = draw(deck, 2)
     table = draw(deck, 5)
