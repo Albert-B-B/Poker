@@ -9,3 +9,6 @@
 
 # Python stuff
 __pycache__/*
+
+# Word stuff
+~$*.docx
