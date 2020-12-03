@@ -1,8 +1,9 @@
 from random import randint
 
+
 def build_deck():
     numbers = list(range(2, 15))
-    suits = ['H','S','C','D']
+    suits = ['H', 'S', 'C', 'D']
     deck = []
     for i in numbers:
         for s in suits:
@@ -10,9 +11,10 @@ def build_deck():
             deck.append(card)
     return deck
 
+
 def draw(deck, amount):
     drawnCards = []
-    
+
     for i in range(0, amount):
         length = len(deck) - 1
         draw = randint(1, length)
@@ -21,54 +23,57 @@ def draw(deck, amount):
 
     return drawnCards
 
+
 def strflush(hand, table):
-    suits = ['H','S','C','D']
+    suits = ['H', 'S', 'C', 'D']
     handTableSuit = table + hand
-    
+
     count = 0
     for suit in suits:
-        for i in range(0,6):
+        for i in range(0, 6):
             if suit + str(i) in handTableSuit:
                 count += 1
                 if suit + str(i + 1) in handTableSuit:
                     count += 1
                     if suit + str(i + 2) in handTableSuit:
                         count += 1
-                        if suit + str(i +3) in handTableSuit:
+                        if suit + str(i + 3) in handTableSuit:
                             count += 1
                             if suit + str(i + 4) in handTableSuit:
                                 count += 1
                                 return True
 
+
 def straight(hand, table):
     handCopy = hand.copy()
     tableCopy = table.copy()
 
-    for i in range(0,2):
+    for i in range(0, 2):
         handCopy[i] = handCopy[i][1:]
         handCopy[i] = int(handCopy[i])
-    for i in range(0,4):
+    for i in range(0, 4):
         tableCopy[i] = tableCopy[i][1:]
         tableCopy[i] = int(tableCopy[i])
     handTable = tableCopy + handCopy
 
     count = 0
-    for i in range(0,6):
+    for i in range(0, 6):
         if i in handTable:
             count += 1
             if i + 1 in handTable:
                 count += 1
                 if i + 2 in handTable:
                     count += 1
-                    if i +3 in handTable:
+                    if i + 3 in handTable:
                         count += 1
                         if i+4 in handTable:
                             count += 1
                             return True
     return False
 
+
 def flush(hand, table):
-    suits = ['H','S','C','D']
+    suits = ['H', 'S', 'C', 'D']
     for i in suits:
         count = 0
         for string in table:
@@ -82,45 +87,48 @@ def flush(hand, table):
             return True
     return False
 
+
 def OAC(hand, table, amount):
 
     handCopy = hand.copy()
     tableCopy = table.copy()
-    for i in range(0,2):
+    for i in range(0, 2):
         handCopy[i] = handCopy[i][1:]
         handCopy[i] = int(handCopy[i])
-    for i in range(0,4):
+    for i in range(0, 4):
         tableCopy[i] = tableCopy[i][1:]
         tableCopy[i] = int(tableCopy[i])
-    for i in range(2,15):
+    for i in range(2, 15):
         count = handCopy.count(i) + tableCopy.count(i)
-        
+
         if count == amount:
             return True
     return False
 
-def highCard(hand):
+
+def high_card(hand):
     handCopy = hand.copy()
-    for i in range(0,2):
+    for i in range(0, 2):
         handCopy[i] = handCopy[i][1:]
         handCopy[i] = int(handCopy[i])
     a = max(handCopy)
     return a
+
 
 def twopairs(hand, table):
     pair = False
     pair2 = False
     handCopy = hand.copy()
     tableCopy = table.copy()
-    for i in range(0,2):
+    for i in range(0, 2):
         handCopy[i] = handCopy[i][1:]
         handCopy[i] = int(handCopy[i])
-    for i in range(0,4):
+    for i in range(0, 4):
         tableCopy[i] = tableCopy[i][1:]
         tableCopy[i] = int(tableCopy[i])
-    for i in range(2,15):
+    for i in range(2, 15):
         count = handCopy.count(i) + tableCopy.count(i)
-        
+
         if count == 2 and not pair:
             pair = True
         elif count == 2:
@@ -130,20 +138,20 @@ def twopairs(hand, table):
         return True
 
 
-def fullHouse(hand, table):
+def full_house(hand, table):
     pair = False
     three = False
     handCopy = hand.copy()
     tableCopy = table.copy()
-    for i in range(0,2):
+    for i in range(0, 2):
         handCopy[i] = handCopy[i][1:]
         handCopy[i] = int(handCopy[i])
-    for i in range(0,4):
+    for i in range(0, 4):
         tableCopy[i] = tableCopy[i][1:]
         tableCopy[i] = int(tableCopy[i])
-    for i in range(2,15):
+    for i in range(2, 15):
         count = handCopy.count(i) + tableCopy.count(i)
-        
+
         if count == 2:
             pair = True
         elif count == 3:
@@ -151,9 +159,8 @@ def fullHouse(hand, table):
 
     if pair and three:
         return True
-    
-    return False
 
+    return False
 
 
 OACf = 0
@@ -172,8 +179,8 @@ sf = 0
 #print("Your hand is", hand)
 #print("On the table is", table)
 
-#straight flush
-for i in range(0,1):
+# straight flush
+for i in range(0, 1):
 
     deck = build_deck()
     hand = draw(deck, 2)
@@ -181,12 +188,12 @@ for i in range(0,1):
     if strflush(hand, table) == True:
         print("You have a straight flush! Very cool!")
         sf += 1
-    
+
     elif OAC(hand, table, 4) == True:
         print("You have four of a kind!")
         OACf += 1
 
-    elif fullHouse(hand, table) == True:
+    elif full_house(hand, table) == True:
         print("You have full house")
         fullH += 1
 
@@ -211,12 +218,8 @@ for i in range(0,1):
         OACt += 1
 
     else:
-        print("You have a high card with a value of", highCard(hand))
+        print("You have a high card with a value of", high_card(hand))
         hc += 1
 
-print('Straight flushes:', sf, 'Four of a kind:',OACf, 'Full House:', fullH, 'flush:',fls,'straight:', strt,'three of a kind:', OACth, 'two pairs:', tOACt, 'pairs:', OACt, 'no hand/high card:',hc)
-
-
-
-
-    
+print('Straight flushes:', sf, 'Four of a kind:', OACf, 'Full House:', fullH, 'flush:', fls, 'straight:',
+      strt, 'three of a kind:', OACth, 'two pairs:', tOACt, 'pairs:', OACt, 'no hand/high card:', hc)
