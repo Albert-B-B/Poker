@@ -1,6 +1,7 @@
 from random import randint
 
 def build_deck():
+    #builds the deck with cards, all following the format Suit - number. Ace is 14, king is 13 etc
     numbers = list(range(2, 15))
     suits = ['H','S','C','D']
     deck = []
@@ -11,6 +12,7 @@ def build_deck():
     return deck
 
 def draw(deck, amount):
+    #returns an amount of random cards, and removes the cards chosen from the deck
     drawnCards = []
     
     for i in range(0, amount):
@@ -22,6 +24,7 @@ def draw(deck, amount):
     return drawnCards
 
 def strflush(hand, table):
+    #checks the hand and table for a straight flush
     suits = ['H','S','C','D']
     handTableSuit = table + hand
     
@@ -41,9 +44,10 @@ def strflush(hand, table):
                                 return True
 
 def straight(hand, table):
+    #checks hand and table for straights
     handCopy = hand.copy()
     tableCopy = table.copy()
-
+    
     for i in range(0,2):
         handCopy[i] = handCopy[i][1:]
         handCopy[i] = int(handCopy[i])
@@ -68,6 +72,7 @@ def straight(hand, table):
     return False
 
 def flush(hand, table):
+    #checks hand and table for flushes
     suits = ['H','S','C','D']
     for i in suits:
         count = 0
@@ -83,7 +88,7 @@ def flush(hand, table):
     return False
 
 def OAC(hand, table, amount):
-
+    #checks hand and table for an amount of the same number-cards
     handCopy = hand.copy()
     tableCopy = table.copy()
     for i in range(0,2):
@@ -100,6 +105,7 @@ def OAC(hand, table, amount):
     return False
 
 def highCard(hand):
+    #determines and returns the highest card in the hand
     handCopy = hand.copy()
     for i in range(0,2):
         handCopy[i] = handCopy[i][1:]
@@ -108,6 +114,7 @@ def highCard(hand):
     return a
 
 def twopairs(hand, table):
+    #checks hand and table for two pairs
     pair = False
     pair2 = False
     handCopy = hand.copy()
@@ -131,6 +138,7 @@ def twopairs(hand, table):
 
 
 def fullHouse(hand, table):
+    #checks hand and table for full house
     pair = False
     three = False
     handCopy = hand.copy()
@@ -154,8 +162,7 @@ def fullHouse(hand, table):
     
     return False
 
-
-
+#variables for each of the 9 hands. Not necessary for normal play.
 OACf = 0
 fullH = 0
 fls = 0
@@ -166,18 +173,19 @@ OACt = 0
 hc = 0
 sf = 0
 
-#hand = ['D2','D3']
-#table = ['D4','D5','D6','C4']
-
-#print("Your hand is", hand)
-#print("On the table is", table)
-
-#straight flush
+#iterates i times. For normal play, keep at range at (0,1).
 for i in range(0,1):
-
+    #builds deck and deals
     deck = build_deck()
     hand = draw(deck, 2)
     table = draw(deck, 5)
+
+    print("Your hand is", hand)
+    print("On the table is", table)
+    
+    #sets a predetermined hand. Only used for testing
+    #hand = ['D2','D3']
+    #table = ['D4','D5','D6','C4']
     if strflush(hand, table) == True:
         print("You have a straight flush! Very cool!")
         sf += 1
@@ -213,10 +221,16 @@ for i in range(0,1):
     else:
         print("You have a high card with a value of", highCard(hand))
         hc += 1
-
-print('Straight flushes:', sf, 'Four of a kind:',OACf, 'Full House:', fullH, 'flush:',fls,'straight:', strt,'three of a kind:', OACth, 'two pairs:', tOACt, 'pairs:', OACt, 'no hand/high card:',hc)
-
-
-
-
-    
+#Prints amount of each hand pulled in i simulations. Not necessary for normal play
+'''
+print('In {} simulations you got '.format(i))
+print('Straight flushes:', sf)
+print('Four of a kind:',OACf)
+print('Full House:', fullH)
+print('Flush:',fls)
+print('Straight:', strt)
+print('Three of a kind:', OACth)
+print('Two pairs:', tOACt)
+print('Pairs:', OACt)
+print('No hand/High card:',hc)
+'''
