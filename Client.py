@@ -6,7 +6,11 @@ Created on Mon Nov 30 20:11:11 2020
 """
 import socket 
 
-def Main(): 
+ID = 0
+
+def getID(): 
+    
+    name = input("What is your name?")
     # local host IP '127.0.0.1' 
     host = '127.0.0.1'
   
@@ -19,27 +23,16 @@ def Main():
     s.connect((host,port)) 
   
     # message you send to server 
-    message = "shaurya says geeksforgeeks"
-    while True: 
+    message = "ID" + name
+    # message sent to server 
+    s.send(message.encode('ascii')) 
   
-        # message sent to server 
-        s.send(message.encode('ascii')) 
+    # messaga received from server 
+    data = s.recv(1024) 
   
-        # messaga received from server 
-        data = s.recv(1024) 
-  
-        # print the received message 
-        # here it would be a reverse of sent message 
-        print('Received from the server :',str(data.decode('ascii'))) 
-  
-        # ask the client whether he wants to continue 
-        ans = input('\nDo you want to continue(y/n) :') 
-        if ans == 'y': 
-            continue
-        else: 
-            break
+    # print the received message 
+    # here it would be a reverse of sent message 
+    print('Received from the server :',str(data.decode('ascii'))) 
     # close the connection 
     s.close() 
-  
-if __name__ == '__main__': 
-    Main() 
+getID() 
