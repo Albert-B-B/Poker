@@ -18,6 +18,7 @@ currentID = 0
 defaultWallet = 15
 
 users = []
+turn = 0
 
 class player:
     def __init__(self,ID,wallet,name):
@@ -48,7 +49,12 @@ def threaded(c):
         pass
     #Sends number of players and their balance. Handles economy as opposed to state that handles hand info
     elif data == "GAMEINFO":
-        pass
+        message = ""
+        for i in users:
+            message += str(i.name) + '/' + str(i.wallet) + '/'
+        if len(message) > 1:
+            message = message[:len(message)-1]
+        c.send(message.encode('ascii'))
     #Recieves info on player action
     elif data == "BET":
         pass
