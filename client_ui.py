@@ -200,8 +200,9 @@ def clicked():
         t5.configure(image=table5)
         t5.place(x=420,y=150)
 
+        #scoreCheck(hands, table)
+        
         handScore.configure(text=scoreCheck(hands, table))
-            
         handScore.place(x=150,y=265)
 
 def scoreCheck(hands, table):
@@ -249,7 +250,7 @@ def scoreCheck(hands, table):
             highCardPrint = "You have a high card with a value of " + str(highCard(hand))
             scores.append(highCard(hand))
             results.append(highCardPrint)
-    end(scores, results, a)
+    return end(scores, results, a)
 def hands(playerAmount):
     global deck
     a = []
@@ -271,9 +272,11 @@ def Bet():
 
 def end(scores, results, playerAmount):
     Winner = scores.index(max(scores)) + 1
-    print("The winner was player", Winner)
+    a = "The winner was player " + str(Winner)
     print(scores)
     print(results)
+
+    return a
 
 def Check():
     print(0)
@@ -311,34 +314,35 @@ h1.place(x=140,y=335)
 hand2 = load(hands[0], 2)
 h2 = Label(root, image=hand2)
 h2.place(x=200,y=335)
+
 if playerAmount >= 2:
     backImg = ImageTk.PhotoImage(Image.open("Assets/back.png"))
     ch1 = Label(root, image= backImg)
-    ch1.place(x=140,y=20)
+    ch1.place(x=55,y=30)
 
     ch2 = Label(root, image= backImg)
-    ch2.place(x=160,y=20)
+    ch2.place(x=75,y=30)
 
 if playerAmount >= 3:
     ch3 = Label(root, image= backImg)
-    ch3.place(x=240,y=20)
+    ch3.place(x=155,y=30)
 
     ch4 = Label(root, image= backImg)
-    ch4.place(x=260,y=20)
+    ch4.place(x=175,y=30)
 
 if playerAmount >= 4:
     ch5 = Label(root, image= backImg)
-    ch5.place(x=340,y=20)
+    ch5.place(x=255,y=30)
 
     ch6 = Label(root, image= backImg)
-    ch6.place(x=360,y=20)
+    ch6.place(x=275,y=30)
 
 if playerAmount >= 5:
     ch7 = Label(root, image= backImg)
-    ch7.place(x=40,y=20)
+    ch7.place(x=355,y=30)
 
     ch7 = Label(root, image= backImg)
-    ch7.place(x=60,y=20)
+    ch7.place(x=375,y=30)
 
 table1 = load(table, 1)
 t1 = Label(root, image=None)
