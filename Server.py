@@ -13,26 +13,54 @@ import threading
   
 print_lock = threading.Lock() 
   
+maxPlayers = 12
+currentID = 0
+defaultWallet = 15
+
+users = []
+turn = 0
+
+class player:
+    def __init__(self,ID,wallet,name):
+        self.ID = ID
+        self.wallet = wallet
+        self.bet = 0
+        self.name = name
+        self.hand = []
+
 # thread function 
 def threaded(c): 
-    while True: 
-  
-        # data received from client 
-        data = c.recv(1024) 
-        if not data: 
-            print('Bye') 
-              
-            # lock released on exit 
-            print_lock.release() 
-            break
-  
-        # reverse the given string from client 
-        data = data[::-1] 
-  
-        # send back reversed string to client 
-        c.send(data) 
-  
+    global currentID
+    global maxPlayers
+    global users
+    global defaultWallet
+    # data received from client 
+    data = c.recv(1024) 
+    data = data.decode('ascii')
+    
+    #Pass
+    if data[0:2] == "ID" and currentID < maxPlayers:
+        print("User {} Joined".format(data[2:len(data)]))
+        users.append(player(str(currentID),defaultWallet, (data[2:len(data)])))
+        c.send(str(currentID).encode('ascii')) 
+        currentID += 1
+    #Return the current state of game including turn, river, layer hand, opponent bet and opponent fold. also shows showdown when relevant
+    elif data == "STATE":
+        pass
+    #Sends number of players and their balance. Handles economy as opposed to state that handles hand info
+    elif data == "GAMEINFO":
+        message = ""
+        for i in users:
+            message += str(i.name) + '/' + str(i.wallet) + '/'
+        if len(message) > 1:
+            message = message[:len(message)-1]
+        c.send(message.encode('ascii'))
+    #Recieves info on player action
+    elif data == "BET":
+        pass
+    
     # connection closed 
+    print_lock.release() 
     c.close() 
   
   
@@ -66,5 +94,5 @@ def Main():
     s.close() 
   
   
-if __name__ == '__main__': 
-    Main() 
+
+Main() 
