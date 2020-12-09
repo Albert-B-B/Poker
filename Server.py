@@ -18,8 +18,9 @@ currentID = 0
 defaultWallet = 15
 
 users = []
-turn = 0
-
+turnBet = 0
+turnRiver = 0
+river = ["yeet1","yeet2","yeet3"]
 class player:
     def __init__(self,ID,wallet,name):
         self.ID = ID
@@ -34,6 +35,8 @@ def threaded(c):
     global maxPlayers
     global users
     global defaultWallet
+    global turnBet
+    global turnRiver
     # data received from client 
     data = c.recv(1024) 
     data = data.decode('ascii')
@@ -41,17 +44,26 @@ def threaded(c):
     #Pass
     if data[0:2] == "ID" and currentID < maxPlayers:
         print("User {} Joined".format(data[2:len(data)]))
-        users.append(player(str(currentID),defaultWallet, (data[2:len(data)])))
+        users.append(player(str(currentID), defaultWallet, (data[2:len(data)])))
         c.send(str(currentID).encode('ascii')) 
         currentID += 1
     #Return the current state of game including turn, river, layer hand, opponent bet and opponent fold. also shows showdown when relevant
     elif data == "STATE":
-        pass
+        message = ""
+        message += str(turnRiver) + '/'
+        message += str(turnBet) + '/'
+        if turnRiver > 0:
+            for i in river:
+                message += i + '/'
+        for i in users:
+            message += str(i.ID) + '/' + str(i.bet) + '/'
+        message = message[:len(message)-1]
+        c.send(message.encode('ascii'))
     #Sends number of players and their balance. Handles economy as opposed to state that handles hand info
     elif data == "GAMEINFO":
         message = ""
         for i in users:
-            message += str(i.name) + '/' + str(i.wallet) + '/'
+            message += str(i.ID) + '/' + str(i.name) + '/' + str(i.wallet) + '/'
         if len(message) > 1:
             message = message[:len(message)-1]
         c.send(message.encode('ascii'))
