@@ -128,10 +128,11 @@ def highCard(hand):
 
 def twopairs(hand, table):
     #checks hand and table for two pairs
-    pair = False
-    pair2 = False
     handCopy = hand.copy()
     tableCopy = table.copy()
+
+    total = handCopy + tableCopy
+    iTotal = []
     for i in range(0,2):
         handCopy[i] = handCopy[i][1:]
         handCopy[i] = int(handCopy[i])
@@ -139,14 +140,12 @@ def twopairs(hand, table):
         tableCopy[i] = tableCopy[i][1:]
         tableCopy[i] = int(tableCopy[i])
     for i in range(2,15):
-        count = handCopy.count(i) + tableCopy.count(i)
+        a = total.count(i)
         
-        if count == 2 and not pair:
-            pair = True
-        elif count == 2:
-            pair2 = True
+        if a == 2:
+            iTotal.append(a)
 
-    if pair and pair2:
+    if len(iTotal) >= 2:
         return True
 
 
@@ -175,6 +174,63 @@ def fullHouse(hand, table):
     
     return False
 
+def check_winner(hands, table):
+    scores = []
+    a = len(hands)
+    
+    for i in range(0, a):
+        hand = hands[i]
+        
+        if strflush(hand, table) == True:
+            scores.append(22)
+
+        elif OAC(hand, table, 4) == True:
+            scores.append(21)
+
+        elif fullHouse(hand, table) == True:
+            scores.append(20)
+        
+        elif flush(hand, table) == True:
+            scores.append(19)
+
+        elif straight(hand, table) == True:
+            scores.append(18)
+
+        elif OAC(hand, table, 3) == True:
+            scores.append(17)
+
+        elif twopairs(hand, table) == True:
+            scores.append(16)
+
+        elif OAC(hand, table, 2) == True:
+            scores.append(15)
+
+        else:
+            scores.append(highCard(hand))
+
+    m = 0
+    winners = []
+    players = []
+    delete = []
+    
+    for i in range(0, len(scores)):
+        players.append(i)
+        if scores[i] >= max(scores):
+            winners.append(i)
+
+    for i in range(0, len(scores)):
+        if scores[i] < max(scores):
+            scores[i] = 0
+
+    n = 0
+    for i in range(0, len(scores)):
+        if scores[n] == 0:
+            del scores[n]
+            del players[n]
+        else:
+            n += 1
+        
+    return players
 
 def clicked():
 
@@ -199,58 +255,10 @@ def clicked():
         cards.append(table[timesDrawn + 1])
         t5.configure(image=table5)
         t5.place(x=420,y=150)
-
-        #scoreCheck(hands, table)
         
-        handScore.configure(text=scoreCheck(hands, table))
-        handScore.place(x=150,y=265)
+        w = check_winner(hands, table)
+        print("Winner is player number", w)
 
-def scoreCheck(hands, table):
-    global results
-    global scores
-    a = len(hands)
-    
-    for i in range(0, a):
-        hand = hands[i]
-        
-        if strflush(hand, table) == True:
-            scores.append(22)
-            results.append("You have a straight flush! Very cool!")
-
-        elif OAC(hand, table, 4) == True:
-            scores.append(21)
-            results.append("You have four of a kind!")
-
-        elif fullHouse(hand, table) == True:
-            scores.append(20)
-            results.append( "You have full house")
-        
-        elif flush(hand, table) == True:
-            scores.append(19)
-            results.append( "You have a flush")
-
-        elif straight(hand, table) == True:
-            scores.append(18)
-            results.append("You have a straight")
-
-        elif OAC(hand, table, 3) == True:
-            scores.append(17)
-            results.append("You have three of a kind")
-
-        elif twopairs(hand, table) == True:
-            scores.append(16)
-            results.append("You have two pairs")
-
-        elif OAC(hand, table, 2) == True:
-            #handScore.configure(text="You have a pair!")
-            scores.append(15)
-            results.append("You have a pair")
-
-        else:
-            highCardPrint = "You have a high card with a value of " + str(highCard(hand))
-            scores.append(highCard(hand))
-            results.append(highCardPrint)
-    return end(scores, results, a)
 def hands(playerAmount):
     global deck
     a = []
@@ -269,14 +277,6 @@ def Bet():
         betError.configure(text="Your bet must be a valid int")
         betError.place(x=1,y=375)
     return  Bet
-
-def end(scores, results, playerAmount):
-    Winner = scores.index(max(scores)) + 1
-    a = "The winner was player " + str(Winner)
-    print(scores)
-    print(results)
-
-    return a
 
 def Check():
     print(0)
