@@ -12,7 +12,9 @@ ownBet = 0
 turnBet = 0
 canBet = False
 name = input("What is your name?")
-ownHand = ""
+ownHand = []
+
+winner = -1
 otherPlayers = []
 river = []
 
@@ -25,15 +27,19 @@ class player:
         self.wallet = wallet
         self.bet = 0
         self.name = name
-        self.hand = []
+        self.hand = ["non","non"]
     def __repr__(self):
-        return repr("ID: " + str(self.ID) + " wallet: " + str(self.wallet) + " bet: " + str(self.bet) + " name: " + str(self.name) + " Hand: " +str(self.hand))
+        return repr("ID: " + str(self.ID) + " wallet: " + str(self.wallet) + " bet: " + str(self.bet) + " name: " + str(self.name) + " Hand: " + str(self.hand[0])) + " " + str(self.hand[1])                               
+
 def getState():
     global ID
     global host
     global port
     global canBet
     global turnBet
+    global winner
+    global otherPlayers
+    
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
   
     # connect to server on local computer 
@@ -43,11 +49,9 @@ def getState():
     message = "STATE"
     # message sent to server 
     s.send(message.encode('ascii')) 
-    for i in otherPlayers:
-            print(i)
-    print("")
     # messaga received from server 
     data = s.recv(1024).decode('ascii').split('/')
+    print(data)
     turnBet = int(data[1])
     #Checks if current turn is yours
     if turnBet == ID:
@@ -57,33 +61,41 @@ def getState():
     if int(data[0]) == 0:
         for i in range(2,len(data[2:len(data)]),2):
             for j in otherPlayers:
-                if int(data[i]) == j.ID and j.ID != ID:
+                if int(data[i]) == int(j.ID) and int(j.ID) != int(ID):
                     j.bet = int(data[i+1])
-                    continue
-        for i in otherPlayers:
-            print(i)
-    #3 cards in river case
-    elif int(data[0]) == 1:
-        pass
-    #4 cards in river case
-    elif int(data[0]) == 2:
-        pass
-    #5 cards in river case
-    elif int(data[0]) == 3:
-        pass
+                    break
     #Showdown case
     elif int(data[0]) == 4:
-        pass
-    
-    
-    
-    
+        riverSize = int(data[0])+1
+        for i in range(3,riverSize+3):
+            river.append(data[i])
+        for i in range(3+riverSize,len(data[2:len(data)]),4):
+            for j in otherPlayers:
+                if int(data[i]) == int(j.ID) and int(j.ID) != int(ID):
+                    j.bet = int(data[i+1])
+                    print(data[i+2])
+                    j.hand = [data[i+2],data[i+3]]
+                    break
+    #Case if there is a river 
+    else:
+        riverSize = int(data[0])+2
+        for i in range(2,riverSize+2):
+            river.append(data[i])
+        for i in range(2+riverSize,len(data[2:len(data)]),2):
+            for j in otherPlayers:
+                if int(data[i]) == int(j.ID) and int(j.ID) != int(ID):
+                    j.bet = int(data[i+1])
+                    break
+    for i in otherPlayers:
+        print(i)
+    print(river)
     s.close() 
     
 def getID(): 
     global name
     global host
     global port
+    global otherPlayers
     # local host IP '127.0.0.1' 
     host = '127.0.0.1'
   
@@ -102,10 +114,7 @@ def getID():
   
     # messaga received from server 
     data = s.recv(1024) 
-  
-    # print the received message 
-    # here it would be a reverse of sent message 
-    print('Received from the server :',str(data.decode('ascii'))) 
+    print("Connected to server")
     # close the connection 
     
     s.close() 
@@ -126,10 +135,15 @@ def getGame():
     s.send(message.encode('ascii')) 
   
 
-    data = s.recv(1024).decode('ascii').split('/')
-    if len(data) > 0:
+    data = s.recv(1024).decode('ascii')
+    print(data)
+    if '/' in data:
+        data = data.split('/')
         for i in range(0,len(data),3):
-            otherPlayers.append(player(data[i],int(data[i+2]),data[i+1]))
+            if data[i] != ID:
+                otherPlayers.append(player(data[i],int(data[i+2]),data[i+1]))
+    for i in otherPlayers:
+        print(i)
     s.close() 
     
 getID() 
