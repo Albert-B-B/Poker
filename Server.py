@@ -21,19 +21,20 @@ defaultWallet = 15
 users = []
 winner = -1
 
+maxBet = 10
 turnBet = 0
-turnRiver = 3
+turnRiver = 0
 smallBlind = 5
 bigBlind = 10
-river = ["yeet1","yeet2","yeet3","yeet4","yeet5"]
+currentMaxBet = 1
+river = []
 class player:
     def __init__(self,ID,wallet,name):
         self.ID = ID
         self.wallet = wallet
         self.bet = 0
         self.name = name
-        #THIS NEEDS TO BE CHANGED TO EMPTY FOR FINAL CODE ONLY FOR TEST !!!!!!!!!!!!!!!!!!!
-        self.hand = ["Yeeterino","Yeetmatron"]
+        self.hand = ["non","non"]
 
 # thread function 
 def threaded(c): 
@@ -45,6 +46,7 @@ def threaded(c):
     global turnRiver
     global winner
     global maxNameLength
+    global maxBet
     # data received from client 
     data = c.recv(1024) 
     data = data.decode('ascii')
@@ -93,8 +95,33 @@ def threaded(c):
         c.send(message.encode('ascii'))
     #Recieves info on player action
     elif data[0:3] == "BET":
-        pass
-    
+        data = data.split('/')
+        if int(data[1]) == turnBet:
+            #Just check
+            if int(data[2]) == 0 and users[data[1]].wallet + users[data[1]].bet - currentMaxBet > 0:
+                users[data[1]].wallet = users[data[1]].wallet + users[data[1]].bet - currentMaxBet
+                users[data[1]].bet = currentMaxBet
+                #Implement all in
+                if users[data[1]].wallet == 0:
+                    pass
+            #User made bet
+            elif users[data[1]].wallet + users[data[1]].bet - int(data[2]) > 0 and users[data[1]].bet - int(data[2]) < maxBet and int(data[2]) > 0:
+                users[data[1]].wallet = users[data[1]].wallet + users[data[1]].bet - int(data[2])
+                users[data[1]].bet = int(data[2])
+            #User is all in
+            elif users[data[1]].wallet - int(data[2]) == 0 or int(data[2]) == 0:
+                pass
+            #Player folds
+            elif int(data[2]) == -1:
+                users[data[1]].bet = int(data[2])
+            else:
+                c.send("Too large bet. Not enough money in wallet".encode('ascii'))
+            turnBet = (turnBet + 1) % len(users)
+    elif data[0:4] == "HAND":
+        data = data.split('/')
+        a = int(data[1])
+        message = str(users[a].hand[0]) + '/' + str(users[a].hand[1])
+        c.send(message.encode('ascii'))
     # connection closed 
     print_lock.release() 
     c.close() 
@@ -102,7 +129,6 @@ def threaded(c):
   
 def Main(): 
     host = "" 
-  
     # reverse a port on your computer 
     # in our case it is 12345 but it 
     # can be anything 

@@ -12,7 +12,7 @@ ownBet = 0
 turnBet = 0
 canBet = False
 name = input("What is your name?")
-ownHand = []
+ownHand = ["non","non"]
 
 winner = -1
 otherPlayers = []
@@ -31,6 +31,46 @@ class player:
     def __repr__(self):
         return repr("ID: " + str(self.ID) + " wallet: " + str(self.wallet) + " bet: " + str(self.bet) + " name: " + str(self.name) + " Hand: " + str(self.hand[0])) + " " + str(self.hand[1])                               
 
+def getBet():
+    #THIS FUNCTION NEEDS TO CHECK THAT IT IS A VALID BET SIZE
+    return 10
+
+def sendBet():
+    global ID
+    global host
+    global port
+    global hand
+    
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
+  
+    # connect to server on local computer 
+    s.connect((host,port)) 
+  
+    # message you send to server 
+    message = "BET/" + str(ID) + '/' + str(getBet())
+    # message sent to server 
+    s.send(message.encode('ascii')) 
+    # messaga received from server 
+
+def getHand():
+    global ID
+    global host
+    global port
+    global hand
+    
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
+  
+    # connect to server on local computer 
+    s.connect((host,port)) 
+  
+    # message you send to server 
+    message = "HAND/" + str(ID) 
+    # message sent to server 
+    s.send(message.encode('ascii')) 
+    
+    data = s.recv(1024).decode('ascii').split('/')
+    
+    
 def getState():
     global ID
     global host
@@ -118,6 +158,7 @@ def getID():
     # close the connection 
     
     s.close() 
+    
     
 def getGame():
     global otherPlayers
