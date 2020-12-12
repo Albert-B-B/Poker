@@ -56,7 +56,7 @@ def getHand():
     global ID
     global host
     global port
-    global hand
+    global ownHand
     
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
   
@@ -69,7 +69,8 @@ def getHand():
     s.send(message.encode('ascii')) 
     
     data = s.recv(1024).decode('ascii').split('/')
-    
+    ownHand[0] = data[0]
+    ownHand[1] = data[1]
     
 def getState():
     global ID
@@ -190,3 +191,6 @@ def getGame():
 getID() 
 getGame()
 getState()
+getHand()
+ID = 0
+sendBet()

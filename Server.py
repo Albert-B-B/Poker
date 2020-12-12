@@ -98,6 +98,7 @@ def threaded(c):
         data = data.split('/')
         if int(data[1]) == turnBet:
             #Just check
+            data[1] = int(data[1])
             if int(data[2]) == 0 and users[data[1]].wallet + users[data[1]].bet - currentMaxBet > 0:
                 users[data[1]].wallet = users[data[1]].wallet + users[data[1]].bet - currentMaxBet
                 users[data[1]].bet = currentMaxBet
@@ -105,7 +106,7 @@ def threaded(c):
                 if users[data[1]].wallet == 0:
                     pass
             #User made bet
-            elif users[data[1]].wallet + users[data[1]].bet - int(data[2]) > 0 and users[data[1]].bet - int(data[2]) < maxBet and int(data[2]) > 0:
+            elif int(users[data[1]].wallet) + users[data[1]].bet - int(data[2]) > 0 and users[data[1]].bet - int(data[2]) < maxBet and int(data[2]) > 0:
                 users[data[1]].wallet = users[data[1]].wallet + users[data[1]].bet - int(data[2])
                 users[data[1]].bet = int(data[2])
             #User is all in
